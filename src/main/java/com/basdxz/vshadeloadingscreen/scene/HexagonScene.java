@@ -1,11 +1,8 @@
 package com.basdxz.vshadeloadingscreen.scene;
 
 
-import com.basdxz.vbuffers.common.MemUtils;
-import com.basdxz.vbuffers.common.ResourceHelper;
-import com.basdxz.vbuffers.texture.Texture;
-import com.basdxz.vshade.example.*;
-import com.basdxz.vshade.shader.ShaderSource;
+import com.basdxz.vshade.example.Profiler;
+import de.javagl.obj.Obj;
 import de.javagl.obj.ObjData;
 import de.javagl.obj.Objs;
 import lombok.*;
@@ -13,17 +10,13 @@ import org.joml.Vector3f;
 import org.lwjgl.opengl.*;
 
 public class HexagonScene {
-    protected final int width;
-    protected final int height;
+    protected final int width = 800;
+    protected final int height = 600;
 
-    protected Camera camera = null;
-    protected CameraController cameraController = null;
-    protected Render render = null;
-
-    public HexagonScene(int width, int height) {
-        this.width = width;
-        this.height = height;
-    }
+    protected final ShaderToyShader shader = ShaderToyShader.newHexagons();
+    protected final VAOHandler vaoHandler = new VAOHandler(shader);
+    protected final Obj model = Objs.create();
+    //protected final Texture texture;
 
     public void reset() {
         setupCamera();
@@ -33,49 +26,32 @@ public class HexagonScene {
     }
 
     protected void setupCamera() {
-        camera = new Camera(width, height);
-        camera.updateProjection();
-        cameraController = new CameraController(camera);
+        //camera = new Camera(width, height);
+        //camera.updateProjection();
     }
 
     protected void setupRender() {
-        render = Render.builder()
-                .shader(ShaderToy.builder()
-                        .source(ShaderSource
-                                .newVertex(ResourceHelper.readResourceAsString("/example/hexagon.vert")))
-                        .source(ShaderSource
-                                .newFragment(ResourceHelper.readResourceAsString("/example/hexagon.frag"))
-                        ).name("Hexagons are the bestagons or something lmao")
-                        .build().init())
-                .camera(camera)
-                .texture(Texture.loadTexture("/example/notABaseSixtyFourString.png"))
-                .modelTransform(ModelTransform.builder()
-                        .position(new Vector3f(0.0F, 0.0F, -0.1F))
-                        .build())
-                .build();
-
-        render.init();
     }
 
     @SneakyThrows
     protected void setupGeometry() {
-        val obj = Objs.create();
+        initOpenGLDebug();
 
-        obj.addVertex(0, 0, 0);
-        obj.addVertex(800, 0, 0);
-        obj.addVertex(800, 600, 0);
-        obj.addVertex(0, 600, 0);
-        obj.addFace(0, 1, 3);
-        obj.addFace(1, 2, 3);
+        model.addVertex(0, 0, -0.1F);
+        model.addVertex(800, 0, -0.1F);
+        model.addVertex(800, 600, -0.1F);
+        model.addVertex(0, 600, -0.1F);
+        model.addFace(0, 1, 3);
+        model.addFace(1, 2, 3);
 
-        render.vaoHandler().newBuffers(obj.getNumVertices(), obj.getNumFaces() * 3);
-        render.vaoHandler().indexBuffer().buffer().asIntBuffer().put(ObjData.getFaceVertexIndices(obj));
+        vaoHandler.newBuffers(model.getNumVertices(), model.getNumFaces() * 3);
+        vaoHandler.indexBuffer().buffer().asIntBuffer().put(ObjData.getFaceVertexIndices(model));
 
-        val vertBuffer = render.vaoHandler().vertexBuffer().buffer();
+        val vertBuffer = vaoHandler.vertexBuffer().buffer();
 
-        render.shader().attributes().position().buffer(vertBuffer).blocks(obj.getNumVertices()).set(MemUtils.getByteBuffer(ObjData.getVertices(obj)));
+        shader.attributes().position().buffer(vertBuffer).blocks(model.getNumVertices()).set(ObjData.getVertices(model));
 
-        ((ShaderToy) render.shader()).shaderToyUniforms().iResolution().set(new Vector3f(800, 600, 800 / 600F));
+        shader.shaderToyUniforms().iResolution().set(new Vector3f(800, 600, 800 / 600F));
     }
 
     public void setupGLFlags() {
@@ -84,9 +60,15 @@ public class HexagonScene {
     }
 
     public void update(Profiler profiler) {
-        ((ShaderToy) render.shader()).shaderToyUniforms().iTime().set(profiler.runningSeconds());
+        //((ShaderToy) render.shader()).shaderToyUniforms().iTime().set(profiler.runningSeconds());
         GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
-        render.doRender();
+        //render.doRender();
         profiler.updateMS();
+    }
+
+    private static void initOpenGLDebug() {
+        GL11.glEnable(GL43.GL_DEBUG_OUTPUT);
+        GL11.glEnable(GL43.GL_DEBUG_OUTPUT_SYNCHRONOUS);
+        GL43.glDebugMessageCallback(new KHRDebugCallback());
     }
 }

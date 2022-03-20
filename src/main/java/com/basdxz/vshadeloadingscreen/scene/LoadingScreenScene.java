@@ -21,7 +21,7 @@ public final class LoadingScreenScene implements Runnable {
     private static final Semaphore mutex = new Semaphore(1);
     private static final Lock lock = new ReentrantLock(true);
     private static final Profiler profiler = new Profiler();
-    private static final HexagonScene scene = new HexagonScene(800, 600);
+    private static final HexagonScene scene = new HexagonScene();
     private static boolean visible = false;
 
     @Override

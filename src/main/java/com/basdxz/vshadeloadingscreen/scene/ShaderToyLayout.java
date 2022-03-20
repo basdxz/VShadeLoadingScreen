@@ -12,6 +12,7 @@ import org.joml.Vector3f;
 import org.lwjgl.opengl.*;
 
 @Getter
+@Accessors(fluent = true, chain = true)
 @SuperBuilder
 public class ShaderToyLayout extends UniformLayout {
     protected final GLFloatVec3 iResolution = GLFloatVec3.builder().variableLayout(this).name("iResolution").build().init();
