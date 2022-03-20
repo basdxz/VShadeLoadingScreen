@@ -4,10 +4,6 @@ uniform mat4 projectionMatrix;
 uniform mat4 viewMatrix;
 uniform mat4 modelMatrix;
 
-uniform ColourUniformBlock {
-    vec4 real_color_in;
-};
-
 in vec3 in_Position;
 
 out vec2 pass_Position;

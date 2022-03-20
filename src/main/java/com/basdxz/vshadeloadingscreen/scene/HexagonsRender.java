@@ -1,13 +1,11 @@
 package com.basdxz.vshadeloadingscreen.scene;
 
-import com.basdxz.vbuffers.common.MemUtils;
 import com.basdxz.vbuffers.texture.Texture;
 import de.javagl.obj.Obj;
 import de.javagl.obj.ObjData;
 import de.javagl.obj.Objs;
+import lombok.*;
 import org.lwjgl.opengl.*;
-
-import java.nio.ByteBuffer;
 
 public class HexagonsRender {
     protected final ShaderToyShader shader = ShaderToyShader.newHexagons();
@@ -27,17 +25,14 @@ public class HexagonsRender {
         model.addFace(0, 1, 3);
         model.addFace(1, 2, 3);
 
+        vaoHandler.newBuffers(model.getNumVertices(), model.getNumFaces() * 3);
         vaoHandler.indexBuffer().buffer().asIntBuffer().put(ObjData.getFaceVertexIndices(model));
 
-        ByteBuffer vertBuffer = vaoHandler.vertexBuffer().buffer();
-
-        shader.shaderPeer().vertices(4);
-        shader.attributes().position().buffer(vertBuffer).set(MemUtils.getByteBuffer(ObjData.getVertices(model)));
+        val vertBuffer = vaoHandler.vertexBuffer().buffer();
+        shader.shaderPeer().vertices(model.getNumVertices());
+        shader.attributes().position().buffer(vertBuffer).set(ObjData.getVertices(model));
 
         texture = Texture.loadTexture("/example/notABaseSixtyFourString.png");
-
-        System.out.println(Display.getWidth());
-        System.out.println(Display.getHeight());
     }
 
     public void render() {
