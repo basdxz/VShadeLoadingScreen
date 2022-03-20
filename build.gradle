@@ -179,6 +179,9 @@ minecraft {
     version = minecraftVersion + "-" + forgeVersion + "-" + minecraftVersion
     runDir = "run"
 
+    print(mcpVersion)
+    print(getMcpVersion())
+
     if (replaceGradleTokenInFile) {
         replaceIn replaceGradleTokenInFile
         if (gradleTokenModId) {

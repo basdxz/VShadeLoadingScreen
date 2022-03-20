@@ -1,5 +1,20 @@
 // Add your dependencies here
 
-dependencies {
+//project.ext.lwjglVersion = "3.3.1"
 
+dependencies {
+    compileOnly("org.projectlombok:lombok:1.18.22")
+    annotationProcessor("org.projectlombok:lombok:1.18.22")
+
+    compile files('libs/VShade-0.1.0.jar')
+    compileOnly 'org.joml:joml:1.10.2'
+    compile 'de.javagl:obj:0.3.0'
+
+    compile("com.falsepattern:falsepatternlib:1.7.10-0.3.2:dev") {
+        transitive = false
+    }
+
+    compile 'org.l33tlabs.twl:pngdecoder:1.0'
+
+    compile 'org.lwjgl.lwjgl:lwjgl:2.9.3'
 }
