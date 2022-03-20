@@ -1,7 +1,7 @@
 package com.basdxz.vshadeloadingscreen.scene;
 
 
-import com.basdxz.vshade.example.Profiler;
+import com.basdxz.vbuffers.texture.Texture;
 import de.javagl.obj.Obj;
 import de.javagl.obj.ObjData;
 import de.javagl.obj.Objs;
@@ -12,6 +12,7 @@ public class HexagonScene {
     protected ShaderToyShader shader;
     protected VAOHandler vaoHandler;
     protected Obj model;
+    protected Texture texture;
 
     public void reset() {
         setupGeometry();
@@ -37,6 +38,7 @@ public class HexagonScene {
         vaoHandler.indexBuffer().buffer().asIntBuffer().put(ObjData.getFaceVertexIndices(model));
         val vertBuffer = vaoHandler.vertexBuffer().buffer();
         shader.attributes().position().buffer(vertBuffer).blocks(model.getNumVertices()).set(ObjData.getVertices(model));
+        texture = Texture.loadTexture("/example/notABaseSixtyFourString.png");
     }
 
     public void setupGLFlags() {
@@ -44,18 +46,18 @@ public class HexagonScene {
         GL11.glEnable(GL11.GL_CULL_FACE);
     }
 
-    public void update(Profiler profiler) {
+    public void update() {
         GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
         shader.uniforms().update();
         shader.shaderToyUniforms().update();
 
-//        texture.bind(0);
+        texture.bind(0);
         vaoHandler.bind();
         shader.bind();
         GL11.glDrawElements(GL11.GL_TRIANGLES, vaoHandler.indices(), GL11.GL_UNSIGNED_INT, GL11.GL_NONE);
         shader.unbind();
         vaoHandler.unbind();
-//        Texture.unbind(0);
+        Texture.unbind(0);
     }
 
     private static void initOpenGLDebug() {
