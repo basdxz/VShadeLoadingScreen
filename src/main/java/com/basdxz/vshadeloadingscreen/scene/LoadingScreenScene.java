@@ -1,7 +1,7 @@
 package com.basdxz.vshadeloadingscreen.scene;
 
+import com.basdxz.vshade.example.Profiler;
 import lombok.*;
-import lombok.experimental.*;
 import net.minecraft.client.Minecraft;
 import org.lwjgl.opengl.*;
 
@@ -11,7 +11,6 @@ import java.util.concurrent.locks.ReentrantLock;
 
 import static lombok.AccessLevel.PRIVATE;
 
-@Accessors(fluent = true, chain = true)
 @NoArgsConstructor(access = PRIVATE)
 public final class LoadingScreenScene implements Runnable {
     private static final int FPS_LIMIT = 100;
@@ -21,16 +20,14 @@ public final class LoadingScreenScene implements Runnable {
     @Getter
     private static final Semaphore mutex = new Semaphore(1);
     private static final Lock lock = new ReentrantLock(true);
-    //private static final Profiler profiler = new Profiler();
-    //private static final ModelScene scene = new ModelScene(800, 600);
+    private static final Profiler profiler = new Profiler();
+    private static final HexagonScene scene = new HexagonScene(800, 600);
     private static boolean visible = false;
-
-    private static final HexagonsRender hexagons = new HexagonsRender();
 
     @Override
     public void run() {
         setGL();
-        //scene.reset();
+        scene.reset();
         while (visible) {
             render();
             mutex.acquireUninterruptibly();
@@ -42,9 +39,8 @@ public final class LoadingScreenScene implements Runnable {
     }
 
     public static void render() {
-        //profiler.updateTime();
-        //scene.update(profiler);
-        hexagons.render();
+        profiler.updateTime();
+        scene.update(profiler);
     }
 
     @SneakyThrows

@@ -1,8 +1,8 @@
 package com.basdxz.vshadeloadingscreen.scene;
 
+import com.basdxz.vbuffers.common.ResourceHelper;
 import com.basdxz.vshade.shader.ShaderProgram;
 import com.basdxz.vshade.shader.ShaderSource;
-import com.basdxz.vshadeloadingscreen.common.ResourceHelper;
 import lombok.*;
 import lombok.experimental.*;
 
