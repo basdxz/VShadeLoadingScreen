@@ -1,6 +1,5 @@
 package com.basdxz.vshadeloadingscreen.scene;
 
-import com.basdxz.vshade.example.Profiler;
 import lombok.*;
 import lombok.experimental.*;
 import net.minecraft.client.Minecraft;
@@ -22,7 +21,7 @@ public final class LoadingScreenScene implements Runnable {
     @Getter
     private static final Semaphore mutex = new Semaphore(1);
     private static final Lock lock = new ReentrantLock(true);
-    private static final Profiler profiler = new Profiler();
+    private static final DisplayResizeHandler displayResizeHandler = new DisplayResizeHandler(LoadingScreenScene::onResize);
     private static final HexagonScene scene = new HexagonScene();
     private static boolean visible = false;
 
@@ -31,6 +30,7 @@ public final class LoadingScreenScene implements Runnable {
         setGL();
         scene.reset();
         while (visible) {
+            displayResizeHandler.checkForResize();
             GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
             render();
             mutex.acquireUninterruptibly();
@@ -41,8 +41,11 @@ public final class LoadingScreenScene implements Runnable {
         clearGL();
     }
 
+    private static void onResize(int width, int height) {
+        GL11.glViewport(0, 0, width, height);
+    }
+
     public static void render() {
-        profiler.updateTime();
         scene.update();
     }
 

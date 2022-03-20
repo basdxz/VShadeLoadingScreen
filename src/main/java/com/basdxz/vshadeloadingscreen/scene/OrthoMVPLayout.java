@@ -4,14 +4,13 @@ import com.basdxz.vshade.layout.UniformLayout;
 import com.basdxz.vshade.variable.linked.floats.GLFloatMat4;
 import lombok.experimental.*;
 import org.joml.Matrix4f;
-import org.lwjgl.opengl.*;
 
 @SuperBuilder
 public class OrthoMVPLayout extends UniformLayout {
     protected final static float Z_NEAR = 0.1F;
     protected final static float Z_FAR = 100F;
 
-    protected final DisplayResizeCheck resizeCheck = new DisplayResizeCheck();
+    protected final DisplayResizeHandler displayResizeHandler = new DisplayResizeHandler(this::onResize);
 
     protected final GLFloatMat4 modelMatrix = GLFloatMat4.builder().variableLayout(this).name("modelMatrix").build().init();
     protected final GLFloatMat4 viewMatrix = GLFloatMat4.builder().variableLayout(this).name("viewMatrix").build().init();
@@ -22,14 +21,13 @@ public class OrthoMVPLayout extends UniformLayout {
     protected final Matrix4f projection = new Matrix4f();
 
     public void update() {
-        updateDisplaySize();
+        displayResizeHandler.checkForResize();
         modelMatrix.set(model);
         viewMatrix.set(view);
         projectionMatrix.set(projection);
     }
 
-    protected void updateDisplaySize() {
-        if (resizeCheck.hasResized())
-            projection.identity().orthoSymmetric(Display.getWidth(), Display.getHeight(), Z_NEAR, Z_FAR);
+    protected void onResize(int width, int height) {
+        projection.identity().orthoSymmetric(width, height, Z_NEAR, Z_FAR);
     }
 }

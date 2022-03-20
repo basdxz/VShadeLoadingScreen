@@ -10,6 +10,6 @@ public class VShadeLoadingScreen {
     @Mod.EventHandler
     @SneakyThrows
     public void postInit(FMLPostInitializationEvent event) {
-
+       // Thread.sleep(100000);
     }
 }
