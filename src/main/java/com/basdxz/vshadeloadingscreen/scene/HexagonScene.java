@@ -20,6 +20,7 @@ public class HexagonScene {
     protected ShaderToyShader shader;
     protected VAOHandler vaoHandler;
     protected Texture texture;
+    protected Texture normalTexture;
 
     @SneakyThrows
     public void reset() {
@@ -36,7 +37,8 @@ public class HexagonScene {
         vaoHandler.indexBuffer().buffer().asIntBuffer().put(RECTANGLE_INDICES);
         val vertBuffer = vaoHandler.vertexBuffer().buffer();
         shader.attributes().position().buffer(vertBuffer).blocks(VERTS);
-        texture = Texture.loadTexture("/assets/vshadeloadingscreen/texture/AbstactBG1.png");
+        texture = Texture.loadTexture("/assets/vshadeloadingscreen/texture/abstract_bg1.png");
+        normalTexture = Texture.loadTexture("/assets/vshadeloadingscreen/texture/abstract_bg1_n.png");
     }
 
     public void update() {
@@ -47,12 +49,14 @@ public class HexagonScene {
         shader.shaderToyUniforms().update();
 
         texture.bind(0);
+        normalTexture.bind(1);
         vaoHandler.bind();
         shader.bind();
         GL11.glDrawElements(GL11.GL_TRIANGLES, vaoHandler.indices(), GL11.GL_UNSIGNED_INT, GL11.GL_NONE);
         shader.unbind();
         vaoHandler.unbind();
         Texture.unbind(0);
+        Texture.unbind(1);
     }
 
     protected void onResize(int width, int height) {
