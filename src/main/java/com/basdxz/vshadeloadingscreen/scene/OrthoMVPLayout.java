@@ -11,6 +11,8 @@ public class OrthoMVPLayout extends UniformLayout {
     protected final static float Z_NEAR = 0.1F;
     protected final static float Z_FAR = 100F;
 
+    protected final DisplayResizeCheck resizeCheck = new DisplayResizeCheck();
+
     protected final GLFloatMat4 modelMatrix = GLFloatMat4.builder().variableLayout(this).name("modelMatrix").build().init();
     protected final GLFloatMat4 viewMatrix = GLFloatMat4.builder().variableLayout(this).name("viewMatrix").build().init();
     protected final GLFloatMat4 projectionMatrix = GLFloatMat4.builder().variableLayout(this).name("projectionMatrix").build().init();
@@ -27,6 +29,7 @@ public class OrthoMVPLayout extends UniformLayout {
     }
 
     protected void updateDisplaySize() {
-        projection.identity().orthoSymmetric(Display.getWidth(), Display.getHeight(), Z_NEAR, Z_FAR);
+        if (resizeCheck.hasResized())
+            projection.identity().orthoSymmetric(Display.getWidth(), Display.getHeight(), Z_NEAR, Z_FAR);
     }
 }

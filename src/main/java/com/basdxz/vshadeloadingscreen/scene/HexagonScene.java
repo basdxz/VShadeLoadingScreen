@@ -9,20 +9,20 @@ import lombok.*;
 import org.lwjgl.opengl.*;
 
 public class HexagonScene {
+    protected DisplayResizeCheck resizeCheck;
     protected ShaderToyShader shader;
     protected VAOHandler vaoHandler;
     protected Obj model;
     protected Texture texture;
 
-    public void reset() {
-        setupGeometry();
-        setupGLFlags();
-    }
-
     @SneakyThrows
-    protected void setupGeometry() {
+    public void reset() {
+        GL11.glEnable(GL11.GL_DEPTH_TEST);
+        GL11.glEnable(GL11.GL_CULL_FACE);
+
         initOpenGLDebug();
 
+        resizeCheck = new DisplayResizeCheck();
         shader = ShaderToyShader.newHexagons();
         vaoHandler = new VAOHandler(shader);
 
@@ -39,11 +39,6 @@ public class HexagonScene {
         val vertBuffer = vaoHandler.vertexBuffer().buffer();
         shader.attributes().position().buffer(vertBuffer).blocks(model.getNumVertices()).set(ObjData.getVertices(model));
         texture = Texture.loadTexture("/example/notABaseSixtyFourString.png");
-    }
-
-    public void setupGLFlags() {
-        GL11.glEnable(GL11.GL_DEPTH_TEST);
-        GL11.glEnable(GL11.GL_CULL_FACE);
     }
 
     public void update() {
