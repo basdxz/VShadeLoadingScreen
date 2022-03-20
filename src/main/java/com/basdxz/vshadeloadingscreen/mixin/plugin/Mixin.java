@@ -8,7 +8,8 @@ import java.util.Set;
 import java.util.function.Supplier;
 
 public enum Mixin {
-    AnvilChunkLoaderMixin(builder(Side.CLIENT).mixin("SplashProgressMixin"));
+    SplashProgressMixin(builder(Side.CLIENT).mixin("SplashProgressMixin")),
+    FMLClientHandlerMixin(builder(Side.CLIENT).mixin("FMLClientHandlerMixin"));
 
     public final String mixin;
     public final Set<TargetedMod> targetedMods;

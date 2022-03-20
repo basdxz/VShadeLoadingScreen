@@ -6,32 +6,47 @@ import lombok.*;
 import net.minecraft.client.Minecraft;
 import org.lwjgl.opengl.*;
 
+import java.util.concurrent.Semaphore;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
+
 import static lombok.AccessLevel.PRIVATE;
 
 @NoArgsConstructor(access = PRIVATE)
 public final class LoadingScreenScene implements Runnable {
-    private static final LoadingScreenScene INSTANCE = new LoadingScreenScene();
     private static final int FPS_LIMIT = 100;
 
-    private boolean visible = false;
-    private final Profiler profiler = new Profiler();
+    @Getter
+    private static final LoadingScreenScene instance = new LoadingScreenScene();
+    @Getter
+    private static final Semaphore mutex = new Semaphore(1);
+    private static final Lock lock = new ReentrantLock(true);
+    private static final Profiler profiler = new Profiler();
+    private static final ModelScene scene = new ModelScene(800, 600);
+    private static boolean visible = false;
 
     @Override
     public void run() {
         setGL();
-        val scene = new ModelScene(800, 600);
         scene.reset();
         while (visible) {
-            scene.update(profiler);
+            render();
+            mutex.acquireUninterruptibly();
             Display.update();
+            mutex.release();
             Display.sync(FPS_LIMIT);
-            profiler.updateTime();
         }
         clearGL();
     }
 
+    public static void render() {
+        profiler.updateTime();
+        scene.update(profiler);
+    }
+
     @SneakyThrows
     private static void setGL() {
+        lock.lock();
         Display.getDrawable().makeCurrent();
         GL11.glClearColor(1.0F, 1.0F, 1.0F, 1.0F);
         GL11.glDisable(GL11.GL_LIGHTING);
@@ -52,17 +67,14 @@ public final class LoadingScreenScene implements Runnable {
         GL11.glEnable(GL11.GL_ALPHA_TEST);
         GL11.glAlphaFunc(GL11.GL_GREATER, 0.1F);
         Display.getDrawable().releaseContext();
-    }
-
-    public static LoadingScreenScene getInstance() {
-        return INSTANCE;
+        lock.unlock();
     }
 
     public static void show() {
-        INSTANCE.visible = true;
+        visible = true;
     }
 
     public static void hide() {
-        INSTANCE.visible = false;
+        visible = false;
     }
 }
