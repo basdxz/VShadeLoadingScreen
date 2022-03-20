@@ -29,6 +29,7 @@ public final class LoadingScreenScene implements Runnable {
         setGL();
         scene.reset();
         while (visible) {
+            GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
             render();
             mutex.acquireUninterruptibly();
             Display.update();
