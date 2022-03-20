@@ -3,10 +3,13 @@ package com.basdxz.vshadeloadingscreen.scene;
 import com.basdxz.vbuffers.common.Disposable;
 import com.basdxz.vshade.shader.ShaderPeerProvider;
 import lombok.*;
+import lombok.experimental.*;
 import org.lwjgl.opengl.*;
 
 import java.util.function.BiConsumer;
 
+@Getter
+@Accessors(fluent = true, chain = true)
 public class VAOHandler implements Disposable {
     protected final int stride;
     protected final BiConsumer<Integer, Integer> vboFormat;
@@ -61,34 +64,6 @@ public class VAOHandler implements Disposable {
             vertexBuffer.dispose();
         if (indexBuffer != null)
             indexBuffer.dispose();
-    }
-
-    public int stride() {
-        return this.stride;
-    }
-
-    public BiConsumer<Integer, Integer> vboFormat() {
-        return this.vboFormat;
-    }
-
-    public int vao() {
-        return this.vao;
-    }
-
-    public int vertices() {
-        return this.vertices;
-    }
-
-    public int indices() {
-        return this.indices;
-    }
-
-    public GraphicsMappedBuffer vertexBuffer() {
-        return this.vertexBuffer;
-    }
-
-    public GraphicsMappedBuffer indexBuffer() {
-        return this.indexBuffer;
     }
 }
 

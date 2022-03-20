@@ -3,10 +3,13 @@ package com.basdxz.vshadeloadingscreen.scene;
 import com.basdxz.vbuffers.common.Disposable;
 import com.basdxz.vbuffers.common.MemUtils;
 import lombok.*;
+import lombok.experimental.*;
 import org.lwjgl.opengl.*;
 
 import java.nio.ByteBuffer;
 
+@Getter
+@Accessors(fluent = true, chain = true)
 public class GraphicsMappedBuffer implements Disposable {
     protected static final int FLAGS = GL30.GL_MAP_WRITE_BIT | GL44.GL_MAP_PERSISTENT_BIT | GL44.GL_MAP_COHERENT_BIT;
 
@@ -43,18 +46,6 @@ public class GraphicsMappedBuffer implements Disposable {
     @Override
     public void dispose() {
         GL15.glDeleteBuffers(bufferID);
-    }
-
-    public Type type() {
-        return this.type;
-    }
-
-    public int bufferID() {
-        return this.bufferID;
-    }
-
-    public ByteBuffer buffer() {
-        return this.buffer;
     }
 
     @AllArgsConstructor
