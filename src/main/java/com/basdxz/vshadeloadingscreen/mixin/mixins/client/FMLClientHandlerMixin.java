@@ -17,7 +17,7 @@ public class FMLClientHandlerMixin {
             require = 1)
     @SideOnly(Side.CLIENT)
     private boolean redirectMutexTryAcquire(Semaphore instance) {
-        return LoadingScreenScene.getMutex().tryAcquire();
+        return LoadingScreenScene.mutex().tryAcquire();
     }
 
     @Redirect(method = "processWindowMessages()V",
@@ -26,6 +26,6 @@ public class FMLClientHandlerMixin {
             require = 1)
     @SideOnly(Side.CLIENT)
     private void redirectMutexRelease(Semaphore instance) {
-        LoadingScreenScene.getMutex().release();
+        LoadingScreenScene.mutex().release();
     }
 }

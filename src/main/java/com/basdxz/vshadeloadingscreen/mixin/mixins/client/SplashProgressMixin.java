@@ -37,7 +37,7 @@ public abstract class SplashProgressMixin {
     @SneakyThrows
     private static void startInjection(CallbackInfo ci) {
         LoadingScreenScene.show();
-        thread = new Thread(LoadingScreenScene.getInstance());
+        thread = new Thread(LoadingScreenScene.instance());
         thread.start();
         checkThreadState();
         ci.cancel();

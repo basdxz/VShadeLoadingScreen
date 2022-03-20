@@ -7,7 +7,7 @@ import org.joml.Matrix4f;
 import org.lwjgl.opengl.*;
 
 @SuperBuilder
-public class OrthogonalMVPLayout extends UniformLayout {
+public class OrthoMVPLayout extends UniformLayout {
     protected final static float Z_NEAR = 0.1F;
     protected final static float Z_FAR = 100F;
 
@@ -27,6 +27,6 @@ public class OrthogonalMVPLayout extends UniformLayout {
     }
 
     protected void updateDisplaySize() {
-        projection.orthoSymmetric(Display.getWidth(), Display.getHeight(), Z_NEAR, Z_FAR);
+        projection.identity().orthoSymmetric(Display.getWidth(), Display.getHeight(), Z_NEAR, Z_FAR);
     }
 }

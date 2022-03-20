@@ -41,7 +41,6 @@ public class ShaderToyLayout extends UniformLayout {
         updateInternal();
         iResolution.set(resolution);
         iTime.set(runningSeconds);
-        System.out.println(runningSeconds);
         iTimeDelta.set(deltaSeconds);
         iTimeDelta.set(deltaSeconds);
     }
