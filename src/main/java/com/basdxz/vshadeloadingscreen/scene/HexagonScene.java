@@ -6,37 +6,26 @@ import de.javagl.obj.Obj;
 import de.javagl.obj.ObjData;
 import de.javagl.obj.Objs;
 import lombok.*;
-import org.joml.Vector3f;
 import org.lwjgl.opengl.*;
 
 public class HexagonScene {
-    protected final int width = 800;
-    protected final int height = 600;
-
-    protected final ShaderToyShader shader = ShaderToyShader.newHexagons();
-    protected final VAOHandler vaoHandler = new VAOHandler(shader);
-    protected final Obj model = Objs.create();
-    //protected final Texture texture;
+    protected ShaderToyShader shader;
+    protected VAOHandler vaoHandler;
+    protected Obj model;
 
     public void reset() {
-        setupCamera();
-        setupRender();
         setupGeometry();
         setupGLFlags();
-    }
-
-    protected void setupCamera() {
-        //camera = new Camera(width, height);
-        //camera.updateProjection();
-    }
-
-    protected void setupRender() {
     }
 
     @SneakyThrows
     protected void setupGeometry() {
         initOpenGLDebug();
 
+        shader = ShaderToyShader.newHexagons();
+        vaoHandler = new VAOHandler(shader);
+
+        model = Objs.create();
         model.addVertex(0, 0, -0.1F);
         model.addVertex(800, 0, -0.1F);
         model.addVertex(800, 600, -0.1F);
@@ -46,12 +35,8 @@ public class HexagonScene {
 
         vaoHandler.newBuffers(model.getNumVertices(), model.getNumFaces() * 3);
         vaoHandler.indexBuffer().buffer().asIntBuffer().put(ObjData.getFaceVertexIndices(model));
-
         val vertBuffer = vaoHandler.vertexBuffer().buffer();
-
         shader.attributes().position().buffer(vertBuffer).blocks(model.getNumVertices()).set(ObjData.getVertices(model));
-
-        shader.shaderToyUniforms().iResolution().set(new Vector3f(800, 600, 800 / 600F));
     }
 
     public void setupGLFlags() {
@@ -60,10 +45,17 @@ public class HexagonScene {
     }
 
     public void update(Profiler profiler) {
-        //((ShaderToy) render.shader()).shaderToyUniforms().iTime().set(profiler.runningSeconds());
         GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
-        //render.doRender();
-        profiler.updateMS();
+        shader.uniforms().update();
+        shader.shaderToyUniforms().update();
+
+//        texture.bind(0);
+        vaoHandler.bind();
+        shader.bind();
+        GL11.glDrawElements(GL11.GL_TRIANGLES, vaoHandler.indices(), GL11.GL_UNSIGNED_INT, GL11.GL_NONE);
+        shader.unbind();
+        vaoHandler.unbind();
+//        Texture.unbind(0);
     }
 
     private static void initOpenGLDebug() {

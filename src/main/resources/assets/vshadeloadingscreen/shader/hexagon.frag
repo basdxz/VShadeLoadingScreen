@@ -708,7 +708,5 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord){
 }
 
 void main(void) {
-    // mainImage(out_Color, pass_Position);
-
-    out_Color = vec4(1.0, 1.0, 1.0, 1.0);
+    mainImage(out_Color, pass_Position);
 }
