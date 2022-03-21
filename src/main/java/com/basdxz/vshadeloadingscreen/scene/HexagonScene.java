@@ -1,7 +1,7 @@
 package com.basdxz.vshadeloadingscreen.scene;
 
 
-import com.basdxz.vbuffers.texture.Texture;
+import com.basdxz.vshadeloadingscreen.common.ResourceHelper;
 import lombok.*;
 import org.joml.Vector3f;
 import org.lwjgl.opengl.*;
@@ -37,8 +37,8 @@ public class HexagonScene {
         vaoHandler.indexBuffer().buffer().asIntBuffer().put(RECTANGLE_INDICES);
         val vertBuffer = vaoHandler.vertexBuffer().buffer();
         shader.attributes().position().buffer(vertBuffer).blocks(VERTS);
-        texture = Texture.loadTexture("/assets/vshadeloadingscreen/texture/abstract_bg1.png");
-        normalTexture = Texture.loadTexture("/assets/vshadeloadingscreen/texture/abstract_bg1_n.png");
+        texture = Texture.loadTexture(ResourceHelper.readResourceAsInputStream("/assets/vshadeloadingscreen/texture/abstract_bg1.png"));
+        normalTexture = Texture.loadTexture(ResourceHelper.readResourceAsInputStream("/assets/vshadeloadingscreen/texture/abstract_bg1_n.png"));
     }
 
     public void update() {
@@ -55,8 +55,8 @@ public class HexagonScene {
         GL11.glDrawElements(GL11.GL_TRIANGLES, vaoHandler.indices(), GL11.GL_UNSIGNED_INT, GL11.GL_NONE);
         shader.unbind();
         vaoHandler.unbind();
-        Texture.unbind(0);
-        Texture.unbind(1);
+        texture.unbind(0);
+        texture.unbind(1);
     }
 
     protected void onResize(int width, int height) {

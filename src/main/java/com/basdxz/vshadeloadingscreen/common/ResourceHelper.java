@@ -1,6 +1,8 @@
 package com.basdxz.vshadeloadingscreen.common;
 
 import lombok.*;
+import net.minecraft.client.Minecraft;
+import net.minecraft.util.ResourceLocation;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -25,7 +27,12 @@ public class ResourceHelper {
         return source.toString();
     }
 
+    @SneakyThrows
+    public static InputStream assetInputStream(String assetName) {
+        return Minecraft.getMinecraft().mcDefaultResourcePack.getInputStream(new ResourceLocation(assetName));
+    }
+
     public static InputStream readResourceAsInputStream(String filename) {
-        return com.basdxz.vbuffers.common.ResourceHelper.class.getResourceAsStream(filename);
+        return ResourceHelper.class.getResourceAsStream(filename);
     }
 }
